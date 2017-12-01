@@ -9,6 +9,7 @@ namespace TeduShop.Model.Models
     {
         [Key]
         [MaxLength(50)]
+        [Column(TypeName ="varchar")]
         public string ID { set; get; }
 
         [MaxLength(50)]
@@ -16,5 +17,8 @@ namespace TeduShop.Model.Models
 
         [MaxLength(50)]
         public string Type { set; get; }
+
+        //public virtual IEnumerable<ProductTag> ProductTags { set; get; }
+        //public virtual IEnumerable<PostTag> PostTags { set; get; }
     }
 }
