@@ -21,7 +21,7 @@ namespace TeduShop.Service
         void Save();
 
     }
-    class PostCategoryService : IPostCategoryService
+    public class PostCategoryService : IPostCategoryService
     {
         IPostCategoryRepository _postCategoryRepository;
         IUnitOfWork _unitOfWork;
