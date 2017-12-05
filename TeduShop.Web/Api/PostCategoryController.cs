@@ -14,7 +14,7 @@ namespace TeduShop.Web.Api
     public class PostCategoryController : ApiControllerBase
     {
         IPostCategoryService _postCategoryService;
-        public PostCategoryController(IErrorService errorService, IPostCategoryService postCatagoryService):base(errorService)
+        public PostCategoryController(IErrorService errorService, IPostCategoryService postCatagoryService) : base(errorService)
         {
             this._postCategoryService = postCatagoryService;
         }
@@ -26,19 +26,12 @@ namespace TeduShop.Web.Api
             {
                 HttpResponseMessage response = null;
 
-                if (ModelState.IsValid)
-                {
-                    requets.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
-                }
-                else
-                {
-                    var listCategory = _postCategoryService.GetAll();
-                    response = requets.CreateResponse(HttpStatusCode.OK, listCategory);
-                }
+                var listCategory = _postCategoryService.GetAll();
+                response = requets.CreateResponse(HttpStatusCode.OK, listCategory);
 
                 return response;
             });
-        }
+        } 
 
         public HttpResponseMessage Post(HttpRequestMessage requets, PostCategory postCategory)
         {
