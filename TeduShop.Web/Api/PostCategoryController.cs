@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,6 +8,8 @@ using System.Web.Http;
 using TeduShop.Model.Models;
 using TeduShop.Service;
 using TeduShop.Web.Infrastructure.Core;
+using TeduShop.Web.Models;
+using TeduShop.Web.Infrastructure.Extensions;
 
 namespace TeduShop.Web.Api
 {
@@ -27,13 +30,16 @@ namespace TeduShop.Web.Api
                 HttpResponseMessage response = null;
 
                 var listCategory = _postCategoryService.GetAll();
-                response = requets.CreateResponse(HttpStatusCode.OK, listCategory);
+                var listCategoryViewModel = Mapper.Map<List<PostCategoryViewModel>>(listCategory);
+
+                response = requets.CreateResponse(HttpStatusCode.OK, listCategoryViewModel);
 
                 return response;
             });
         } 
 
-        public HttpResponseMessage Post(HttpRequestMessage requets, PostCategory postCategory)
+        [Route("add")]
+        public HttpResponseMessage Post(HttpRequestMessage requets, PostCategoryViewModel postCategoryViewModel)
         {
             return CreateHttpResponse(requets, () =>
             {
@@ -45,16 +51,21 @@ namespace TeduShop.Web.Api
                 }
                 else
                 {
-                    var category = _postCategoryService.Add(postCategory);
+                    PostCategory newPostCategory = new PostCategory();
+                    newPostCategory.UpdatePostCategory(postCategoryViewModel);
+
+                    var category = _postCategoryService.Add(newPostCategory);
                     _postCategoryService.Save();
-                    response = requets.CreateResponse(HttpStatusCode.Created, postCategory);
+
+                    response = requets.CreateResponse(HttpStatusCode.Created, category);
                 }
 
                 return response;
             });
         }
 
-        public HttpResponseMessage Put(HttpRequestMessage requets, PostCategory postCategory)
+        [Route("update")]
+        public HttpResponseMessage Put(HttpRequestMessage requets, PostCategoryViewModel postCategoryViewModel)
         {
             return CreateHttpResponse(requets, () =>
             {
@@ -66,9 +77,13 @@ namespace TeduShop.Web.Api
                 }
                 else
                 {
-                    _postCategoryService.Update(postCategory);
+                    var postCategoryDb = _postCategoryService.GetByID(postCategoryViewModel.ID);
+                    postCategoryDb.UpdatePostCategory(postCategoryViewModel);
+
+                    _postCategoryService.Update(postCategoryDb);
                     _postCategoryService.Save();
-                    response = requets.CreateResponse(HttpStatusCode.OK, postCategory);
+
+                    response = requets.CreateResponse(HttpStatusCode.OK, postCategoryDb);
                 }
 
                 return response;
